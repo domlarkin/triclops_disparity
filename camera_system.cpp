@@ -321,21 +321,21 @@ int CameraSystem::doStereo( TriclopsContext const & triclops,
         exit(-1);
       }
 
-    te = triclopsSetDisparity( triclops, disp_min,disp_max);
-    _HANDLE_TRICLOPS_ERROR( "triclopsSetDisparity()", te );
+//    te = triclopsSetDisparity( triclops, disp_min,disp_max);
+//    _HANDLE_TRICLOPS_ERROR( "triclopsSetDisparity()", te );
 
-    te = triclopsSetStereoMask( triclops, stereo_mask );
-    _HANDLE_TRICLOPS_ERROR( "triclopsSetStereoMask()", te );
+//    te = triclopsSetStereoMask( triclops, stereo_mask );
+//    _HANDLE_TRICLOPS_ERROR( "triclopsSetStereoMask()", te );
 
-    te = triclopsSetDisparityMappingOn( triclops, disp_map_on);
-    _HANDLE_TRICLOPS_ERROR( "triclopsSetDisparityMappingOn()", te );
+//    te = triclopsSetDisparityMappingOn( triclops, disp_map_on);
+//    _HANDLE_TRICLOPS_ERROR( "triclopsSetDisparityMappingOn()", te );
 
-    te = triclopsSetDisparityMapping( triclops, disp_map_min, disp_map_max);
-    _HANDLE_TRICLOPS_ERROR( "triclopsSetDisparityMapping()", te );
+//    te = triclopsSetDisparityMapping( triclops, disp_map_min, disp_map_max);
+//    _HANDLE_TRICLOPS_ERROR( "triclopsSetDisparityMapping()", te );
 
     // Set subpixel interpolation on to use
-    te = triclopsSetSubpixelInterpolation( triclops, 1 );
-    _HANDLE_TRICLOPS_ERROR( "triclopsSetSubpixelInterpolation()", te );
+//    te = triclopsSetSubpixelInterpolation( triclops, 1 );
+//    _HANDLE_TRICLOPS_ERROR( "triclopsSetSubpixelInterpolation()", te );
 
     // Rectify the images
     te = triclopsRectify( triclops, const_cast<TriclopsInput *>( &stereoData ) );
@@ -351,12 +351,11 @@ int CameraSystem::doStereo( TriclopsContext const & triclops,
                              TriCam_REFERENCE,
                              &depthImage );
 
-    _HANDLE_TRICLOPS_ERROR( "triclopsGetImage()", te );
+    _HANDLE_TRICLOPS_ERROR( "triclopsGetImagewert()", te );
+    const char * pDisparityFilename = "disparityTest.pgm";
+    te = triclopsSaveImage( &depthImage, const_cast<char *>(pDisparityFilename) );
+    _HANDLE_TRICLOPS_ERROR( "triclopsSaveImage()", te );
     return 0;
-
-//    const char * pDisparityFilename = "disparityTest.pgm";
-//    te = triclopsSaveImage( &disparityImage, const_cast<char *>(pDisparityFilename) );
-//    _HANDLE_TRICLOPS_ERROR( "triclopsSaveImage()", te );
 
 }
 
