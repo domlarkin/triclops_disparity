@@ -27,7 +27,7 @@ class CameraSystem
         // convert image to BRG
         int convertToBGR( FC2::Image & image, FC2::Image & convertedImage );
         TriclopsContext triclops;
-        cv::Mat getDisparityImage();
+        ;
         std::string getResolution();
         int shutdown();
         int setDispMax(int disp){disp_max=disp;return 0;}
@@ -35,6 +35,7 @@ class CameraSystem
         int setDispMapMax(int disp){disp_map_max=disp;return 0;}
         int setDispMapMin(int disp){disp_map_min=disp;return 0;}
         int setStereoMask(int mask){stereo_mask=mask;return 0;}
+        cv::Mat getDisparityImage(){return disparityImageCV;}
 
     private:
         // carry out stereo processing pipeline
