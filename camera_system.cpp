@@ -13,7 +13,8 @@
 int convertTriclops2Opencv(TriclopsImage & bgrImage,
                            cv::Mat & cvImage)
 {
-    cvImage = cv::Mat(bgrImage.nrows, bgrImage.ncols, CV_16UC1, bgrImage.data, bgrImage.rowinc);
+    //printf("triImage row,col,rowinc %d,%d,%d",bgrImage.nrows,bgrImage.ncols,bgrImage.rowinc);
+    cvImage = cv::Mat(bgrImage.nrows, bgrImage.ncols, CV_8UC1, bgrImage.data, bgrImage.rowinc);
     return 0;
 }
 
@@ -26,6 +27,7 @@ CameraSystem::CameraSystem()
     disp_map_on = 0;
     stereo_mask = 11;
 }
+
 CameraSystem::~CameraSystem()
 {
     this->shutdown();
@@ -41,20 +43,6 @@ int CameraSystem::shutdown()
     _HANDLE_TRICLOPS_ERROR("triclopsDestroyContext()", te);
     return 0;
 }
-
-//cv::Mat CameraSystem::getDisparityImage()
-//{
-//    //printf("Getting Disparity Image %d\n",this->disparityImageCV.cols);
-//    if(this->disparityImageCV.cols != 0)
-//    {
-//        return this->disparityImageCV;
-//    }
-//    else
-//    {
-//        cv::Mat image = cv::imread("/home/user1/Projects/qt_projects//qtTutorial01/iggyV1.png");
-//        return image;
-//    }
-//}
 
 int CameraSystem::startUp()
 {
@@ -309,35 +297,22 @@ int CameraSystem::doStereo(TriclopsContext const & triclops,
 {
     TriclopsError te;
     //printf("stereo size in DOSTEREO: %d,%d\n",stereoData.ncols, stereoData.nrows);
-    if(stereoData.ncols == 1024)
-    {
-        triclopsSetResolution(this->triclops, 768, 1024);
+     te = triclopsSetResolution(this->triclops, stereoData.nrows, stereoData.ncols);
+        _HANDLE_TRICLOPS_ERROR( "triclopsSetResolution()", te );
 
-    }
-    else if(stereoData.ncols == 640)
-    {
-        triclopsSetResolution(this->triclops, 480, 640);
+    te = triclopsSetDisparity( triclops, disp_min,disp_max);
+    _HANDLE_TRICLOPS_ERROR( "triclopsSetDisparity()", te );
 
-    }
-    else
-    {
-        printf("ERROR: The triclops image is not 640x480 or 1024x768. It is %dx%d", stereoData.ncols, stereoData.nrows);
-        exit(-1);
-    }
+    te = triclopsSetStereoMask( triclops, stereo_mask );
+    _HANDLE_TRICLOPS_ERROR( "triclopsSetStereoMask()", te );
 
-//    te = triclopsSetDisparity( triclops, disp_min,disp_max);
-//    _HANDLE_TRICLOPS_ERROR( "triclopsSetDisparity()", te );
+    te = triclopsSetDisparityMappingOn( triclops, disp_map_on);
+    _HANDLE_TRICLOPS_ERROR( "triclopsSetDisparityMappingOn()", te );
 
-//    te = triclopsSetStereoMask( triclops, stereo_mask );
-//    _HANDLE_TRICLOPS_ERROR( "triclopsSetStereoMask()", te );
+    te = triclopsSetDisparityMapping( triclops, disp_map_min, disp_map_max);
+    _HANDLE_TRICLOPS_ERROR( "triclopsSetDisparityMapping()", te );
 
-//    te = triclopsSetDisparityMappingOn( triclops, disp_map_on);
-//    _HANDLE_TRICLOPS_ERROR( "triclopsSetDisparityMappingOn()", te );
-
-//    te = triclopsSetDisparityMapping( triclops, disp_map_min, disp_map_max);
-//    _HANDLE_TRICLOPS_ERROR( "triclopsSetDisparityMapping()", te );
-
-    // Set subpixel interpolation on to use
+//     Set subpixel interpolation on to use
 //    te = triclopsSetSubpixelInterpolation( triclops, 1 );
 //    _HANDLE_TRICLOPS_ERROR( "triclopsSetSubpixelInterpolation()", te );
 
